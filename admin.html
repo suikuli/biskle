@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>admin</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+        body {
+            padding: 20px;
+            line-height: 1.8;
+            color: #2c3e50;
+            background-color: #f8f9fa;
+            background: url("/win11up.jpg") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .title {
+            padding: 10px 18px;
+            background-color: rgba(0, 0, 0, 0.1);
+            color: rgb(0, 0, 0);
+            border: none;
+            font-size: 16px;
+        }
+        .nav-bar {
+            background-color: rgba(255, 255, 255, 0.5);
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .nav-btn {
+            float: left;
+            display: block;
+            padding: 10px 18px;
+            background-color: rgba(255, 255, 255, 0);
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        .common_button {
+            padding: 10px 18px;
+            background-color: rgba(0, 0, 0, 0.05);
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        .common_button:hover {
+            background-color: rgba(150, 252, 255, 0.3);
+            color: rgb(0, 134, 134);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .common_button:active {
+            background-color: rgba(64, 104, 105, 0.3);
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(150, 252, 255, 0.3);
+            color: rgb(0, 134, 134);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .nav-btn::after {
+            content: '';
+            background: linear-gradient(120deg,#e0c3fc, #8ec5fc);
+            height: 4px;
+            width: 0;
+            display: block;
+            position: relative;
+            bottom: 0;
+            left: 50%;
+            transition: all 0.5s ease;
+        }
+        .nav-btn:hover::after {
+            content: '';
+            background: linear-gradient(120deg,#e0c3fc, #8ec5fc);
+            height: 4px;
+            width: 100%;
+            display: block;
+            position: relative;
+            bottom: 0;
+            left: 0;
+        }
+        .nav-btn:active {
+            background-color: rgba(64, 104, 105, 0.3);
+        }
+        .section {
+            background: linear-gradient(120deg,#e0c3fc, #8ec5fc);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: none;
+            opacity: 0.9;
+        }
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .section.inactive {
+            display: block;
+            opacity: 0;
+            animation: fadeOut 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 0.9; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        table {
+            position: relative;
+            border-collapse: collapse;
+            margin: 15px 0;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            direction: rtl;
+        }
+        th, td {
+            border: 1px solid #e0e0e0;
+            text-align: center;
+        }
+        th {
+            background-color: #f1f2f3;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .popwindow{
+            animation: fadeOut 0.5s ease;
+            position: absolute;
+            background: linear-gradient(200deg,#e0c3fc, #8ec5fc);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: none;
+            opacity: 0;
+        }
+        .popwindow.active {
+            display: block;
+            opacity: 0.9;
+            animation: fadeIn 0.5s ease;
+        }
+        .popwindow.inactive {
+            display: block;
+            opacity: 0;
+            animation: fadeOut 0.5s ease;
+        }
+        .popwindow.shack {
+            display: block;
+            opacity: 1;
+            animation: shacking 0.5s ease;
+        }
+        @keyframes shacking {
+            0% { opacity: 1; transform: translateY(0px); }
+            50% { opacity: 1; transform: translateY(-20px); }
+            100% { opacity: 0; transform: translateY(20px); }
+        }
+        /*输入框*/
+        .common_input {
+            color: rgb(0, 0, 0);
+            border: none;
+            outline: none;
+            text-indent: 5px;
+            padding: 10px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .common_input:hover {
+            background-color: rgba(150, 252, 255, 0.3);
+            color: rgb(0, 134, 134);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .common_input:active {
+            background-color: rgba(64, 104, 105, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-bar">
+        <span class="title">神秘后台(半成品)</span>
+        <button class="nav-btn" onclick="switchSection('monitor')">座位实时监控</button>
+    </div>
+
+    <div id="monitor" class="section active">
+        <button class="common_button" onclick="fetchJson('/api/monitor','output_monitor')">获取座位数据</button>
+        <div id="output_monitor">等待获取数据...</div>
+        <table border="1" style="border-collapse: collapse; text-align:center; direction: rtl;width: 100%;">
+            <thead>
+                <tr>
+                    <th>A</th>
+                    <th>B</th>
+                    <th>C</th>
+                    <th>D</th>
+                    <th>E</th>
+                    <th>F</th>
+                    <th>G</th>
+                    <th>H</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td id="1A">-</td>
+                    <td id="1B">-</td>
+                    <td id="1C">-</td>
+                    <td id="1D">-</td>
+                    <td id="1E">-</td>
+                    <td id="1F">-</td>
+                    <td id="1G">-</td>
+                    <td id="1H">-</td>
+                    <th style="direction:ltr;">1</th>
+                </tr>
+                <tr>
+                    <td id="2A">-</td>
+                    <td id="2B">-</td>
+                    <td id="2C">-</td>
+                    <td id="2D">-</td>
+                    <td id="2E">-</td>
+                    <td id="2F">-</td>
+                    <td id="2G">-</td>
+                    <td id="2H">-</td>
+                    <th style="direction:ltr;">2</th>
+                </tr>
+
+                <tr>
+                    <td id="3A">-</td>
+                    <td id="3B">-</td>
+                    <td id="3C">-</td>
+                    <td id="3D">-</td>
+                    <td id="3E">-</td>
+                    <td id="3F">-</td>
+                    <td id="3G">-</td>
+                    <td id="3H">-</td>
+                    <th style="direction:ltr;">3</th>
+                </tr>
+
+                <tr>
+                    <td id="4A">-</td>
+                    <td id="4B">-</td>
+                    <td id="4C">-</td>
+                    <td id="4D">-</td>
+                    <td id="4E">-</td>
+                    <td id="4F">-</td>
+                    <td id="4G">-</td>
+                    <td id="4H">-</td>
+                    <th style="direction:ltr;">4</th>
+                </tr>
+                <tr>
+                    <td id="5A">-</td>
+                    <td id="5B">-</td>
+                    <td id="5C">-</td>
+                    <td id="5D">-</td>
+                    <td id="5E">-</td>
+                    <td id="5F">-</td>
+                    <td id="5G">-</td>
+                    <td id="5H">-</td>
+                    <th style="direction:ltr;">5</th>
+                </tr>
+                <tr>
+                    <td id="6A">-</td>
+                    <td id="6B">-</td>
+                    <td id="6C">-</td>
+                    <td id="6D">-</td>
+                    <td id="6E">-</td>
+                    <td id="6F">-</td>
+                    <td id="6G">-</td>
+                    <td id="6H">-</td>
+                    <th style="direction:ltr;">6</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="seat" class="section">
+        <button class="common_button" onclick="getinfo('/lists','output_seat','list_req')">获取座位拍卖单数据</button>
+        <div id="output_seat">等待获取数据...</div>
+    </div>
+
+    <div id="wallet" class="section">
+        <div id="output_wallet">等待获取数据...</div>
+    </div>
+
+    <div id="settings" class="section">
+        假装这个地方有一些设置选项（？<br>
+        其实我不知道有什么东西可以设置，如果有想法请告诉我谢谢
+    </div>
+
+    <div id="account" class="section">
+        <div id="output_account_name">等待获取数据...</div>
+        <div id="output_account_id">等待获取数据...</div>
+        <div id="output_account">等待获取数据...</div>
+        <button class="common_button" onclick="logout()">退出登录</button><br><br>
+        <input class='common_input' id="old_psw" required type="text" name="old_psw" placeholder="旧密码" /><br><br>
+        <input class='common_input' id="new_psw" required type="text" name="new_psw" placeholder="新密码" /><br><br>
+        <div id="psw_output" ></div>
+        <button class="common_button" onclick="changepassword()">修改密码并退出登录</button> -->
+    </div>
+
+    <script>
+        function initTable() {
+            it="ABCDEFGH"
+            jt="123456"
+            for (let i = 0; i < 8; i++) {
+                for (let j = 0; j < 6; j++) {
+                    insd=jt[j]+it[i]
+                    document.getElementById(insd).innerHTML='-'
+                }
+            }
+        }
+        function switchSection(sectionId) {
+            document.querySelectorAll('.section.active').forEach(sec => {
+                sec.classList.remove('active');
+                sec.classList.add('inactive');
+                setTimeout(() => {
+                sec.classList.remove('inactive');
+                }, 300);
+            });
+            document.querySelectorAll('.popwindow.active').forEach(sec => {
+                sec.classList.remove('active');
+                sec.classList.add('inactive');
+                setTimeout(() => {
+                sec.classList.remove('inactive');
+                }, 300);
+            });
+            setTimeout(() => {
+                document.getElementById(sectionId).classList.add('inactive');
+                document.getElementById(sectionId).classList.add('active');
+                document.getElementById(sectionId).classList.remove('inactive');
+            }, 400);
+        }
+        function popout(sectionId) {
+            document.getElementById(sectionId).classList.add('inactive');
+            document.getElementById(sectionId).classList.add('active');
+            document.getElementById(sectionId).classList.remove('inactive');
+        }
+        function popwindowdisappear(sectionId) {
+            setTimeout(() => {
+            document.getElementById(sectionId).classList.remove('active');
+            document.getElementById(sectionId).classList.add('inactive');
+            }, 500);
+            setTimeout(() => {
+            document.getElementById(sectionId).classList.remove('inactive');
+            }, 1000);
+        }
+        function popwindowshack(sectionId) {
+            document.getElementById(sectionId).classList.add('shack');
+            setTimeout(() => {
+            document.getElementById(sectionId).classList.remove('shack');
+            }, 500);
+        }
+        async function fetchJson(url, elementId) {
+        const el = document.getElementById(elementId);
+        if (!el) {
+            console.error("未找到元素：" + elementId);
+            return;
+        }
+        el.textContent = "正在加载数据...";
+        try {
+            const res = await fetch(url);
+            if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+            const data = await res.json();
+            initTable()
+            for (let inde = 0; inde < data.seatdatas.length; inde++) {
+                const elemen = data.seatdatas[inde];
+                if (document.getElementById(elemen.index).innerHTML==null||document.getElementById(elemen.index).innerHTML=='-') {
+                    document.getElementById(elemen.index).innerHTML =(await Getname('/api/account','output_account',elemen.uuid))+'<br>价格:'+elemen.price;
+                    
+                }else if (Number(elemen.price)>Number(document.getElementById(elemen.index).innerHTML.substr(document.getElementById(elemen.index).innerHTML.indexOf(":")+1))) {
+                    document.getElementById(elemen.index).innerHTML =(await Getname('/api/account','output_account',elemen.uuid))+'<br>价格:'+elemen.price;
+                }
+            }
+            el.textContent = "加载数据成功!";
+        } catch (err) {
+            el.textContent = "获取数据失败：" + err.message;
+        }
+        }
+
+        async function Getaccount(url, elementId) {
+        const el = document.getElementById(elementId);
+        el.textContent = "获取数据中";
+        try {
+            const res = await fetch(url,{
+                method:'POST',
+                headers:{'Content-Type':"application/json"},
+                body:JSON.stringify({
+                    uuid:sessionStorage.getItem("uuid")})
+            });
+            if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+            const data = await res.json();
+            document.getElementById("output_account_name").innerHTML = "名字：" + data.name;
+            document.getElementById("output_account_id").innerHTML = "id：" + data.id;
+            el.textContent = "获取数据成功！";
+            return data.name;
+        } catch (err) {
+            el.textContent = "获取数据失败：" + err.message;
+        }
+        }
+
+        async function Getname(url, elementId,idelement) {
+        try {
+            const res = await fetch(url,{
+                method:'POST',
+                headers:{'Content-Type':"application/json"},
+                body:JSON.stringify({
+                    uuid:idelement})
+            });
+            if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+            const data = await res.json();
+            return data.name;
+        } catch (err) {
+        }
+        }
+
+        async function GetGold(url, elementId) {
+        const el = document.getElementById(elementId);
+        el.textContent = "获取数据中";
+        try {
+            const res = await fetch(url,{
+                method:'POST',
+                headers:{'Content-Type':"application/json",},
+                body:JSON.stringify({
+                    uuid:sessionStorage.getItem("uuid")})
+            });
+            if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+            const data = await res.json();
+            document.getElementById("output_wallet_value").innerHTML = "金币数目：" + data.gold;
+            el.textContent = "获取数据成功！";
+        } catch (err) {
+            el.textContent = "获取数据失败：" + err.message;
+        }
+        }
+
+        async function getinfo(apiurl, outputid) {
+        const el = document.getElementById(outputid);
+        if (!el) {
+            console.error("未找到元素：" + outputid);
+            return;
+        }
+        el.textContent = "等待加载数据...";
+        try {
+            const res = await fetch(apiurl,{
+                method:'POST',
+                headers:{'Content-Type':"application/json",},
+                body:JSON.stringify({
+                    uuid:sessionStorage.getItem("uuid")})
+            });
+            if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+            const data = await res.json();
+            document.getElementById("output_seat_price").innerHTML = "金币数目：" + data.price;
+            document.getElementById("output_seat_index").innerHTML = "座位编号：" + data.index;
+            el.textContent="加载数据成功！"
+        } catch (err) {
+            el.textContent = "获取数据失败：" + err.message;
+        }
+        }
+        async function postreq(windowid) {
+            var reg_index1=/[1-6]/
+            var reg_index2=/[A-H]/
+            var reg_price=/\d+/
+            if (document.getElementById('index_req').value.trim()=== null || document.getElementById('index_req').value.trim() === ''){
+                document.getElementById("input_feedback").innerHTML = '编号不能为空';
+                event.preventDefault();
+            }else if (document.getElementById('price_req').value.trim()=== null || document.getElementById('price_req').value.trim() === ''){
+                document.getElementById("input_feedback").innerHTML = '价格不能为空';
+                event.preventDefault();
+            }else{
+            if (!(document.getElementById('index_req').value.trim().length==2) || !(reg_index1.test(document.getElementById('index_req').value.trim()[0])) ||!(reg_index2.test(document.getElementById('index_req').value.trim()[1]))) {
+                document.getElementById("input_feedback").innerHTML = "座位编号格式不正确";
+                event.preventDefault();
+                return;
+            }
+            if (!(Number(document.getElementById('price_req').value.trim())% 1 == 0)) {
+                document.getElementById("input_feedback").innerHTML = "价格格式不正确";
+                event.preventDefault();
+                return;
+            }
+            if (!(Number(document.getElementById('price_req').value.trim())>=50)){
+                document.getElementById("input_feedback").innerHTML = "价格必须大于50";
+                event.preventDefault();
+                return;
+            }
+            document.getElementById("input_feedback").innerHTML = "加载中......";
+            var aaa=await fetch('/',{
+                method:'POST',
+                headers:{'Content-Type':"application/json",},
+                body:JSON.stringify({
+                    uuid_req:sessionStorage.getItem("uuid"),
+                    index_req:document.getElementById('index_req').value.trim(),
+                    price_req:document.getElementById('price_req').value.trim()})
+            })
+            var result = await aaa.json()
+            if (result.state=='relogin'){
+                sessionStorage.removeItem("uuid")
+                window.location.href="./login"
+            }else if (result.state=='low_price'){
+                document.getElementById("input_feedback").innerHTML = "价格低于或等于现有报价，现有最高报价为："+result.higher;
+                return;
+            }else if (result.state=='low_b'){
+                document.getElementById("input_feedback").innerHTML = "金币不足";
+                return;
+            }else if (result.state=='low_self_price'){
+                document.getElementById("input_feedback").innerHTML = "价格低于或等于你的历史最高报价，最高报价为："+result.higher;
+                return;
+            }else{
+            document.getElementById("input_feedback").innerHTML = "成功！";
+            
+            popwindowdisappear(windowid)}
+            }
+        }
+
+        async function confirmid() {
+            try {
+                const res =await fetch('/admin_manage/login/login/confirm',{
+                    method:'POST',
+                    headers:{'Content-Type':"application/json",},
+                    body:JSON.stringify({
+                        uuid:sessionStorage.getItem('uuid')})
+                });
+                if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+                const data = await res.json();
+                if(data.state=="unvalid uuid"){
+                    sessionStorage.removeItem("uuid")
+                    window.location.href="/admin_manage/login"
+                }
+            } catch (err) {
+                alert("获取数据失败：" + err.message);
+            }
+        }
+
+        if (sessionStorage.getItem('uuid') === null|| sessionStorage.getItem('uuid') === ''){
+            window.location.href="/admin_manage/login"
+        }else{
+            confirmid();
+        }
+        function logout() {
+            sessionStorage.removeItem("uuid")
+            window.location.href="/admin_manage/login"
+        }
+        Getaccount('/api/account','output_account')
+        GetGold('/api/wallet','output_wallet')
+    </script>
+</body>
+</html>

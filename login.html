@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>座位登录</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Microsoft YaHei", Arial, sans-serif;
+        }
+        body {
+            padding: 20px;
+            line-height: 1.8;
+            color: #2c3e50;
+            background-color: #f8f9fa;
+            background: url("/invertedworld.webp") no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .common_button {
+            padding: 10px 18px;
+            background-color: rgba(0, 0, 0, 0.05);
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+        .common_button:hover {
+            background-color: rgba(150, 252, 255, 0.3);
+            color: rgb(0, 134, 134);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .common_button:active {
+            background-color: rgba(64, 104, 105, 0.3);
+        }
+        .section {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -200px 0 0 -300px;
+            background: linear-gradient(120deg,#e0c3fc, #8ec5fc);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: none;
+            opacity: 0.9;
+            text-align: center;
+            width: 600px;
+        }
+        .section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        .section.inactive {
+            display: block;
+            opacity: 0;
+            animation: fadeOut 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 0.9; transform: translateY(0); }
+        }
+        @keyframes fadeOut {
+            from { opacity: 0.9; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+        .common_input {
+            
+            color: rgb(0, 0, 0);
+            border: none;
+            outline: none;
+            padding: 10px 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .common_input:hover {
+            background-color: rgba(150, 252, 255, 0.3);
+            color: rgb(0, 134, 134);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+        .common_input:active {
+            background-color: rgba(64, 104, 105, 0.3);
+        }
+        h1{
+            font-weight: 200
+        }
+        h3{
+            font-weight: 100
+        }
+    </style>
+</head>
+<body>
+    <div id="login_main_screen" class="section active">
+        <h1>座位拍卖系统</h1>
+        <h3>登录</h3>
+    <form action="" method="post" id="login_form">
+        <input class="common_input" id="acc" required type="text" name="acc" placeholder="账户名" /><br><br>
+        <input class='common_input' id="psw" required type="text" name="psw" placeholder="密码" /><br><br>
+        <button class="common_button" type="button" onclick="postjson()">提交</button>
+    </form>
+    <div id="result_output">
+         
+    </div>
+    </div>
+    <script>
+        async function postjson() {
+            if (document.getElementById('acc').value.trim()=== null || document.getElementById('acc').value.trim() === ''){
+                alert('账户名不能为空')
+                event.preventDefault();
+            }else if (document.getElementById('psw').value.trim()=== null || document.getElementById('psw').value.trim() === ''){
+                alert('密码不能为空')
+                event.preventDefault();
+            }else{
+            var res = await fetch('/api/login',{
+                method:'POST',
+                headers:{'Content-Type':"application/json",},
+                body:JSON.stringify({
+                    acc:document.getElementById('acc').value.trim(),
+                    psw:document.getElementById('psw').value.trim()})
+            })
+            }
+            const data =await res.json()
+            if (!data.uuid) {
+                document.getElementById('result_output').innerHTML=data.msg
+                return;
+            }
+            localStorage.setItem("uuid",data.uuid)
+            window.location.href='../'
+        }
+
+
+        async function confirmid() {
+            try {
+                const res =await fetch('/api/login/confirm',{
+                    method:'POST',
+                    headers:{'Content-Type':"application/json",},
+                    body:JSON.stringify({
+                        uuid:localStorage.getItem('uuid')})
+                });
+                if (!res.ok) throw new Error("HTTP 状态码 " + res.status);
+                const data = await res.json();
+                if (data.state=="signed"){
+                    document.getElementById('result_output').innerHTML="已登录，正在跳转..."
+                    window.location.href='../'
+                }else if(data.state=="unvalid uuid"){
+                    localStorage.removeItem("uuid")
+                }
+            } catch (err) {
+                alert("获取数据失败：" + err.message);
+            }
+        }
+
+        if (localStorage.getItem('uuid') === null|| localStorage.getItem('uuid') === ''){
+        }else{
+            confirmid();
+        }
+    </script>
+</body>
+</html>

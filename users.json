@@ -1,0 +1,11 @@
+{
+    "userdatas": [
+        {
+            "id": 1234567890,
+            "name": "test",
+            "password": "test",
+            "gold": 123456,
+            "previous": null
+        }
+    ]
+}
