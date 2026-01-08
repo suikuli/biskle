@@ -34,21 +34,6 @@ app.post('/api/login/confirm',(req,res)=>{
     res.status(201).json({"state":"unvalid uuid"});
 });
 
-app.post('/api/changepassword',(req,res)=>{
-    const {uuid,old_psw,new_psw}=req.body;
-    var inform = JSON.parse(fs.readFileSync('users.json').toString())
-    for (let index = 0; index < inform.userdatas.length; index++) {
-        if (uuid == inform.userdatas[index].id) {
-            if (old_psw == inform.userdatas[index].password) {
-                inform.userdatas[index].password=new_psw;
-                fs.writeFileSync('users.json', JSON.stringify(inform));
-                res.status(201).json({"state":"success"});
-            }
-            res.status(201).json({"state":"unvalid old"});
-        }
-    }
-    res.status(201).json({"state":"unvalid uuid"});
-});
 //api==========================================================
 app.post('/api/wallet',(req,res)=>{
     const {uuid} = req.body;
@@ -109,10 +94,6 @@ app.get('/',(req,res)=>{
 });
 app.get('/login',(req,res)=>{
     res.sendFile( 'login.html' )
-});
-app.get('/lists',(req,res)=>{
-    res.header('Access-Control-Allow-Origin', '*');
-    res.send("本api已弃用")
 });
 app.get('/admin_management',(req,res)=>{
     res.sendFile( 'admin.html' )
